@@ -32,6 +32,29 @@ index:
 	docker-compose exec jupyter \
 		bash -c "gunzip -c < /scripts/vic-scenes.tar.gz | dc-index-from-tar"
 
+metadata-landsat:
+	docker-compose exec jupyter \
+		datacube metadata add https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/develop/digitalearthau/config/eo3/eo3_landsat_ard.odc-type.yaml
+
+product-landsat:
+	docker-compose exec jupyter \
+		bash -c "\
+			datacube product add https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/develop/digitalearthau/config/eo3/products-aws/ard_ls5.odc-product.yaml;\
+			datacube product add https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/develop/digitalearthau/config/eo3/products-aws/ard_ls7.odc-product.yaml;\
+			datacube product add https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/develop/digitalearthau/config/eo3/products-aws/ard_ls8.odc-product.yaml;"
+
+
+index-landsat:
+	docker-compose exec jupyter \
+		bash -c "\
+			s3-find --no-sign-request "s3://dea-public-data-dev/analysis-ready-data/ga_ls8c_ard_3/**/*.odc-metadata.yaml"\
+			| s3-to-tar --no-sign-request | dc-index-from-tar --product ga_ls8c_ard_3 --ignore-lineage"
+
+index-landsat-one:
+	docker-compose exec jupyter \
+		datacube dataset add --ignore-lineage --confirm-ignore-lineage \
+		https://dea-public-data-dev.s3-ap-southeast-2.amazonaws.com/analysis-ready-data/ga_ls8c_ard_3/115/074/2013/05/20/ga_ls8c_ard_3-0-0_115074_2013-05-20_final.proc-info.yaml
+
 # Careful, this takes a very long time.
 find-dataset-documents:
 	docker-compose exec jupyter \
