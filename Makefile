@@ -32,6 +32,29 @@ index:
 	docker-compose exec jupyter \
 		bash -c "gunzip -c < /scripts/vic-scenes.tar.gz | dc-index-from-tar"
 
+# Careful, this takes a very long time.
+find-dataset-documents:
+	docker-compose exec jupyter \
+		bash -c \
+			"s3-find --no-sign-request s3://dea-public-data/L2/sentinel-2-nbar/S2MSIARD_NBAR/**/**/ARD-METADATA.yaml\
+			 > /scripts/s-2-all-scenes.txt | gzip -c /scripts/s-2-all-scenes.txt | /scripts/s-2-all-scenes.txt.gz"
+
+get-dataset-documents:
+	docker-compose exec jupyter bash -c \
+		"gunzip -c /scripts/s-2-all-scenes.txt.gz |\
+		grep -f /scripts/vic-tiles.txt |\
+		s3-to-tar --no-sign-request | gzip -c > /scripts/vic-scenes.tar.gz"
+
+# Some extra commands to help in managing things.
+# Rebuild the image
+build:
+	docker-compose build
+
+# Start an interactive shell
+shell:
+	docker-compose exec jupyter bash
+
+# OTHER
 metadata-landsat:
 	docker-compose exec jupyter \
 		datacube metadata add https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/develop/digitalearthau/config/eo3/eo3_landsat_ard.odc-type.yaml
@@ -55,28 +78,8 @@ index-landsat-one:
 		datacube dataset add --ignore-lineage --confirm-ignore-lineage \
 		https://dea-public-data-dev.s3-ap-southeast-2.amazonaws.com/analysis-ready-data/ga_ls8c_ard_3/115/074/2013/05/20/ga_ls8c_ard_3-0-0_115074_2013-05-20_final.proc-info.yaml
 
-# Careful, this takes a very long time.
-find-dataset-documents:
-	docker-compose exec jupyter \
-		bash -c \
-			"s3-find s3://dea-public-data/L2/sentinel-2-nbar/S2MSIARD_NBAR/**/**/ARD-METADATA.yaml\
-			 > /scripts/s-2-all-scenes.txt | gzip -c /scripts/s-2-all-scenes.txt | /scripts/s-2-all-scenes.txt.gz"
 
-get-dataset-documents:
-	docker-compose exec jupyter bash -c \
-		"gunzip -c /scripts/s-2-all-scenes.txt.gz |\
-		grep -f /scripts/vic-tiles.txt |\
-		s3-to-tar --no-sign-request | gzip -c > /scripts/vic-scenes.tar.gz"
-
-# Some extra commands to help in managing things.
-# Rebuild the image
-build:
-	docker-compose build
-
-# Start an interactive shell
-shell:
-	docker-compose exec jupyter bash
-
+# CLOUD FORMATION
 # Update S3 template (this is owned by Digital Earth Australia)
 upload-s3:
 	aws s3 cp cube-in-a-box-dea-cloudformation.yml s3://opendatacube-cube-in-a-box/ --acl public-read
