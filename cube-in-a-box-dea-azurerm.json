@@ -60,7 +60,7 @@
     },
     "diskSizeGB": "512",
     "vmName": "[concat(parameters('InstanceName'),'-', parameters('InstanceType'))]",
-    "artifactsLocation": "https://raw.githubusercontent.com/codeindulgence/cube-in-a-box-dea/main/",
+    "artifactsLocation": "https://raw.githubusercontent.com/opendatacube/cube-in-a-box-dea/azure/",
     "virtualNetworkName": "dea-vnet",
     "subnetName": "dea-subnet",
     "networkSecurityGroupName": "dea-sg"
