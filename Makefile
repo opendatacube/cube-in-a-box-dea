@@ -31,12 +31,17 @@ product:
 			datacube product add https://raw.githubusercontent.com/GeoscienceAustralia/dea-config/master/products/ga_s2_ard_nbar/ga_s2_ard_nbar_granule.yaml;\
 			datacube product add https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/develop/digitalearthau/config/eo3/products-aws/ard_ls8.odc-product.yaml;\
 			datacube product add https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/develop/digitalearthau/config/eo3/products-aws/ard_ls7.odc-product.yaml;\
+			datacube product add /scripts/linescan.odc-product.yaml;\
 		"
+
 # 4. Index data
 # Todo: write something that indexes off this: https://explorer.sandbox.dea.ga.gov.au/stac/search?product=ga_s2a_ard_nbar_granule&limit=100&bbox=[140,-40,150,-34]
 index:
 	docker-compose exec jupyter \
 		bash -c "\
+			cat /scripts/s-2-vic-scenes.txt \
+			| s3-to-tar --no-sign-request \
+			| dc-index-from-tar --ignore-lineage ;\
 			cat /scripts/ls7-vic-scenes.txt \
 			| s3-to-tar --no-sign-request \
 			| dc-index-from-tar --ignore-lineage ;\
@@ -44,6 +49,10 @@ index:
 			| s3-to-tar --no-sign-request \
 			| dc-index-from-tar --ignore-lineage ;\
 		"
+
+index-linescan:
+	docker-compose exec jupyter \
+		bash -c "datacube dataset add /scripts/test_input/*.odc-dataset.json"
 
 # Find Sentinel-2, Landsat 7 and Landsat 8 scenes over Victoria
 # First search for all scenes... careful, this takes a very long time.

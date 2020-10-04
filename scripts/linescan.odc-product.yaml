@@ -1,0 +1,13 @@
+name: linescan
+description: Linescan data over fire areas in Victoria
+metadata_type: eo3
+
+metadata:
+  product:
+    name: linescan
+
+measurements:
+- name: 'thermal'
+  units: '1'
+  dtype: uint8
+  nodata: 0
