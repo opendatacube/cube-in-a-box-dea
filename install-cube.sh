@@ -15,7 +15,7 @@ password="${1}"
 
 set -ex
 # Log start time
-echo 'Started $(date)'
+echo "Started $(date)"
 
 # Install our dependencies
 export DEBIAN_FRONTEND=noninteractive
@@ -64,4 +64,4 @@ docker-compose exec -T jupyter bash -c "cat /scripts/ls7-vic-scenes.txt | s3-to-
 docker-compose exec -T jupyter bash -c "cat /scripts/ls8-vic-scenes.txt | s3-to-tar --no-sign-request | dc-index-from-tar --ignore-lineage"
 # docker-compose exec -T jupyter bash -c "s3-find s3://dea-public-data/projects/ey-challenge-2020/**/*.json | s3-to-tar --no-sign-request | dc-index-from-tar --stac"
 
-echo 'Finished $(date)'
+echo "Finished $(date)"

@@ -64,7 +64,7 @@ Resources:
           export DEBIAN_FRONTEND=noninteractive
           apt-get update && apt-get install wget
           wget https://raw.githubusercontent.com/opendatacube/cube-in-a-box-dea/main/install-cube.sh -O /tmp/install-cube.sh
-          chmod +x /tmp/install-cube.sh && bash /tmp/install-cube.sh ${SecretPassword} 2>&1 | tee -a /tmp/install-cube.log
+          chmod +x /tmp/install-cube.sh && bash -c '/tmp/install-cube.sh ${SecretPassword} 2>&1 | tee -a /tmp/install-cube.log'
       Tags:
         - Key:   "Name"
           Value: !Ref 'EC2InstanceName'
