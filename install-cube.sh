@@ -11,7 +11,7 @@ EOS
 exit 1
 fi
 
-password="${1}"
+PASSWORD="${1}"
 
 set -ex
 # Log start time
@@ -33,14 +33,13 @@ unzip /tmp/archive.zip
 mv cube-in-a-box-dea-main /opt/odc
 
 # We need to change some local vars.
-sed --in-place 's/secretpassword/${SecretPassword}/g' /opt/odc/docker-compose.yml
+sed --in-place "s/secretpassword/${PASSWORD}/g" /opt/odc/docker-compose.yml
 
 # We need write access in these places
 chmod -R 777 /opt/odc/notebooks
 cd /opt/odc
 
 # Start the machines
-docker-compose pull
 docker-compose up -d
 
 # Wait for them to wake up
